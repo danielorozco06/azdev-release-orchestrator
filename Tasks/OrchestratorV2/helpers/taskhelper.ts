@@ -25,6 +25,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Retrieves the endpoint based on the specified endpoint type.
+     * @returns A Promise that resolves to an IEndpoint object containing the endpoint URL and token.
+     * @throws An error if the endpoint URL or token cannot be retrieved.
+     */
     public async getEndpoint(): Promise<IEndpoint> {
 
         const debug = this.debugLogger.extend(this.getEndpoint.name);
@@ -72,6 +77,10 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Retrieves the parameters required for the task.
+     * @returns A Promise that resolves to an object containing the parameters.
+     */
     public async getParameters(): Promise<IParameters> {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
@@ -94,7 +103,8 @@ export class TaskHelper implements ITaskHelper {
         };
 
         const settings: ISettings = {
-
+            // Check if `updateInterval` is a number and not zero, then set `sleep` to `updateInterval` in
+            // milliseconds, otherwise default to 5000 milliseconds
             sleep: Number(updateInterval)
                 ? Number(updateInterval) * 1000 : 5000,
             approvalRetry: Number(approvalRetry)
@@ -230,6 +240,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Reads and sets the create inputs for the task.
+     * @param parameters - The initial parameters object.
+     * @returns A promise that resolves to the updated parameters object.
+     */
     private async readCreateInputs(parameters: IParameters): Promise<IParameters> {
 
         parameters.releaseType = ReleaseType.New;
@@ -355,6 +370,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Update properties of parameters (releaseType, releaseName, stages) with specific release input values.
+     * @param parameters - The object to update.
+     * @returns A promise that resolves to the updated input parameters.
+     */
     private async readSpecificInputs(parameters: IParameters): Promise<IParameters> {
 
         parameters.releaseType = ReleaseType.Specific;
@@ -375,6 +395,10 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Determines whether to suppress tasks that have succeeded with issues.
+     * @returns A promise that resolves to a boolean indicating whether to suppress tasks with succeeded with issues.
+     */
     private async suppressSucceededWithIssues(): Promise<boolean> {
 
         const debug = this.debugLogger.extend(this.suppressSucceededWithIssues.name);
