@@ -8,3 +8,14 @@
 **/*.xml
 **/*.env
 **/.vs
+
+# Debug files
+**/.vscode/*
+!**/.vscode/settings.json
+!**/.vscode/launch.template.json
+!**/.vscode/extensions.json
+!**/.vscode/cspell.json
+!**/.vscode/shared.code-snippets
+!**/.vscode/replace.sh
+!**/.vscode/tasks.json
+**/*.map
