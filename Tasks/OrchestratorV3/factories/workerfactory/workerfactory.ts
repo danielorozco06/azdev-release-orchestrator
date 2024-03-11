@@ -30,12 +30,20 @@ import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipeline
 import { IStageDeployer } from "../../workers/stagedeployer/istagedeployer";
 import { StageDeployer } from "../../workers/stagedeployer/stagedeployer";
 
+/**
+ * WorkerFactory class implements IWorkerFactory interface to provide methods for creating worker instances.
+ */
 export class WorkerFactory implements IWorkerFactory {
 
     private logger: ILogger;
 
     private apiFactory: IApiFactory;
 
+    /**
+     * Constructs a new instance of the WorkerFactory class.
+     * @param {IApiFactory} apiFactory - The API factory used to create API clients.
+     * @param {ILogger} logger - The logger used for logging and debugging purposes.
+     */
     constructor(apiFactory: IApiFactory, logger: ILogger) {
 
         this.logger = logger;
@@ -44,6 +52,10 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
+    /**
+     * Creates an instance of RunCreator with all necessary dependencies.
+     * @returns {Promise<IRunCreator>} A promise that resolves to an instance of IRunCreator.
+     */
     public async createRunCreator(): Promise<IRunCreator> {
 
         const coreApi: ICoreApiRetry = await this.apiFactory.createCoreApi();
@@ -63,6 +75,10 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
+    /**
+     * Creates an instance of RunDeployer with all necessary dependencies.
+     * @returns {Promise<IRunDeployer>} A promise that resolves to an instance of IRunDeployer.
+     */
     public async createRunDeployer(): Promise<IRunDeployer> {
 
         const commonHelper: ICommonHelper = new CommonHelper(this.logger);
@@ -84,6 +100,10 @@ export class WorkerFactory implements IWorkerFactory {
 
     }
 
+    /**
+     * Creates an instance of ProgressReporter.
+     * @returns {Promise<IProgressReporter>} A promise that resolves to an instance of IProgressReporter.
+     */
     public async createProgressReporter(): Promise<IProgressReporter> {
 
         return new ProgressReporter(this.logger);

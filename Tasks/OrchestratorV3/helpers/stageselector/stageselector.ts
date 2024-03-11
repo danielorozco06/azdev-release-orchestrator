@@ -13,6 +13,9 @@ import { IBuildCheckpoint } from "../../workers/progressmonitor/ibuildcheckpoint
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 import { ICommonHelper } from "../commonhelper/icommonhelper";
 
+/**
+ * Class responsible for selecting and managing stages in Azure DevOps builds.
+ */
 export class StageSelector implements IStageSelector {
 
     private debugLogger: IDebug;
@@ -21,6 +24,13 @@ export class StageSelector implements IStageSelector {
     private pipelinesApi: IPipelinesApiRetry;
     private commonHelper: ICommonHelper;
 
+    /**
+     * Constructs a new `StageSelector` instance.
+     * @param buildApi - The build API with retry capabilities to interact with Azure DevOps.
+     * @param pipelinesApi - The pipelines API with retry capabilities to interact with Azure DevOps.
+     * @param commonHelper - A helper class providing common functionality.
+     * @param logger - The logger instance for logging debug information.
+     */
     constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
@@ -31,6 +41,13 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Retrieves the details of a specific stage within a build.
+     * @param build - The build containing the stage.
+     * @param stage - The stage to retrieve.
+     * @returns A promise that resolves to the updated `IBuildStage` object.
+     * @throws Will throw an error if the timeline or stage timeline cannot be retrieved.
+     */
     public async getStage(build: Build, stage: IBuildStage): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.getStage.name);
@@ -88,6 +105,12 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Initiates the start of a stage within a build.
+     * @param build - The build containing the stage to start.
+     * @param stage - The stage to start.
+     * @returns A promise that resolves when the stage has been started.
+     */
     public async startStage(build: Build, stage: IBuildStage): Promise<void> {
 
         const debug = this.debugLogger.extend(this.startStage.name);
@@ -105,6 +128,13 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Approves a stage within a build.
+     * @param build - The build containing the stage to approve.
+     * @param approval - The approval details for the stage.
+     * @param comment - An optional comment for the approval.
+     * @returns A promise that resolves to the result of the approval request.
+     */
     public async approveStage(build: Build, approval: IBuildApproval, comment?: string): Promise<unknown> {
 
         const debug = this.debugLogger.extend(this.approveStage.name);
@@ -125,6 +155,15 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Confirms that a stage within a build has started successfully.
+     * @param build - The build containing the stage to confirm.
+     * @param stage - The stage to confirm.
+     * @param maxAttempts - The maximum number of attempts to check if the stage has started.
+     * @param interval - The interval in milliseconds between each attempt.
+     * @returns A promise that resolves to the updated `IBuildStage` object.
+     * @throws Will throw an error if the stage does not start within the specified attempts or if the stage is skipped or pending dependencies.
+     */
     public async confirmStage(build: Build, stage: IBuildStage, maxAttempts: number, interval: number): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.confirmStage.name);
@@ -176,6 +215,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Validates the state of a stage to ensure it is not skipped or pending dependencies.
+     * @param stage - The stage to validate.
+     * @throws Will throw an error if the stage is skipped or pending dependencies.
+     */
     private confirmStageState(stage: IBuildStage): void {
 
         const skipped: boolean = stage.result === 4 ? true : false;
@@ -196,6 +240,13 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Retrieves a timeline record by name and type from a build timeline.
+     * @param timeline - The timeline to search within.
+     * @param name - The name of the timeline record to find.
+     * @param type - The type of the timeline record to find.
+     * @returns The found `TimelineRecord` or undefined if not found.
+     */
     private getTimelineRecord(timeline: Timeline, name: string, type: string): TimelineRecord | undefined {
 
         const timelineRecord: TimelineRecord | undefined = timeline.records!.find(
@@ -205,6 +256,13 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Retrieves a child timeline record by parent ID and type from a build timeline.
+     * @param timeline - The timeline to search within.
+     * @param parentId - The parent ID of the timeline record to find.
+     * @param type - The type of the timeline record to find.
+     * @returns The found `TimelineRecord` or undefined if not found.
+     */
     private getChildTimelineRecord(timeline: Timeline, parrentId: string, type: string): TimelineRecord | undefined {
 
         const timelineRecord: TimelineRecord | undefined = timeline.records!.find(
@@ -214,6 +272,13 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Retrieves all child timeline records by parent ID and type from a build timeline.
+     * @param timeline - The timeline to search within.
+     * @param parentId - The parent ID of the timeline records to find.
+     * @param type - The type of the timeline records to find.
+     * @returns An array of `TimelineRecord` objects.
+     */
     private getChildTimelineRecords(timeline: Timeline, parentId: string, type: string): TimelineRecord[] {
 
         const timelineRecords: TimelineRecord[] = timeline.records!.filter(
@@ -223,6 +288,12 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates an array of `IBuildJob` objects from timeline records.
+     * @param timeline - The timeline containing the job records.
+     * @param stagePhases - An array of `TimelineRecord` objects representing the phases of a stage.
+     * @returns An array of `IBuildJob` objects.
+     */
     private newBuildJobs(timeline: Timeline, stagePhases: TimelineRecord[]): IBuildJob[] {
 
         const result: IBuildJob[] = [];
@@ -255,6 +326,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates a `IBuildCheckpoint` object from a timeline record.
+     * @param timelineRecord - The timeline record to convert into a checkpoint.
+     * @returns A `IBuildCheckpoint` object.
+     */
     private newBuildCheckpoint(timelineRecord: TimelineRecord): IBuildCheckpoint {
 
         const buildCheckpoint: IBuildCheckpoint = {
@@ -269,6 +345,12 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates an array of `IBuildApproval` objects from timeline records.
+     * @param timeline - The timeline containing the approval records.
+     * @param stageCheckpoint - The `TimelineRecord` object representing the stage checkpoint.
+     * @returns An array of `IBuildApproval` objects.
+     */
     private newBuildApprovals(timeline: Timeline, stageCheckpoint: TimelineRecord): IBuildApproval[] {
 
         const result: IBuildApproval[] = [];
@@ -287,6 +369,12 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates an array of `IBuildCheck` objects from timeline records.
+     * @param timeline - The timeline containing the check records.
+     * @param stageCheckpoint - The `TimelineRecord` object representing the stage checkpoint.
+     * @returns An array of `IBuildCheck` objects.
+     */
     private newBuildChecks(timeline: Timeline, stageCheckpoint: TimelineRecord): IBuildApproval[] {
 
         const result: IBuildCheck[] = [];
@@ -305,6 +393,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates a `IBuildJob` object from a timeline record.
+     * @param timelineRecord - The timeline record to convert into a job.
+     * @returns A `IBuildJob` object.
+     */
     private newBuildJob(timelineRecord: TimelineRecord): IBuildJob {
 
         const buildJob: IBuildJob = {
@@ -324,6 +417,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates a `IBuildTask` object from a timeline record.
+     * @param timelineRecord - The timeline record to convert into a task.
+     * @returns A `IBuildTask` object.
+     */
     private newBuildTask(timelineRecord: TimelineRecord): IBuildTask {
 
         const buildTask: IBuildTask = {
@@ -341,6 +439,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates a `IBuildApproval` object from a timeline record.
+     * @param timelineRecord - The timeline record to convert into an approval.
+     * @returns A `IBuildApproval` object.
+     */
     private newBuildApproval(timelineRecord: TimelineRecord): IBuildApproval {
 
         const buildApproval: IBuildApproval = {
@@ -355,6 +458,11 @@ export class StageSelector implements IStageSelector {
 
     }
 
+    /**
+     * Creates a `IBuildCheck` object from a timeline record.
+     * @param timelineRecord - The timeline record to convert into a check.
+     * @returns A `IBuildCheck` object.
+     */
     private newBuildCheck(timelineRecord: TimelineRecord): IBuildCheck {
 
         const buildCheck: IBuildCheck = {

@@ -12,11 +12,20 @@ import { ISettings } from "./isettings";
 import { ILogger } from "../../loggers/ilogger";
 import { ICommonHelper } from "../commonhelper/icommonhelper";
 
+/**
+ * TaskHelper class implements ITaskHelper interface to provide methods for retrieving endpoint details,
+ * task parameters, validating run status, and handling task failure.
+ */
 export class TaskHelper implements ITaskHelper {
 
     private debugLogger: IDebug;
     private commonHelper: ICommonHelper;
 
+    /**
+     * Constructs a new instance of the TaskHelper class.
+     * @param {ILogger} logger - The logger used for debugging purposes.
+     * @param {ICommonHelper} commonHelper - A helper class providing common functionality.
+     */
     constructor(logger: ILogger, commonHelper: ICommonHelper) {
 
         this.debugLogger = logger.extend(this.constructor.name);
@@ -24,6 +33,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Retrieves the endpoint details from the pipeline's environment.
+     * @returns {Promise<IEndpoint>} A promise that resolves to an object containing the endpoint URL and token.
+     * @throws {Error} Throws an error if the endpoint URL or token cannot be retrieved.
+     */
     public async getEndpoint(): Promise<IEndpoint> {
 
         const debug = this.debugLogger.extend(this.getEndpoint.name);
@@ -79,6 +93,10 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Retrieves the parameters specified for the task from the pipeline's environment.
+     * @returns {Promise<IParameters>} A promise that resolves to an object containing all the task parameters.
+     */
     public async getParameters(): Promise<IParameters> {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
@@ -166,6 +184,12 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Validates the run status and sets the task result accordingly.
+     * @param {RunStatus} status - The current run status of the pipeline.
+     * @returns {Promise<void>} A promise that resolves when the validation is complete.
+     * @throws {Error} Throws an error if the run status indicates a failure.
+     */
     public async validate(status: RunStatus): Promise<void> {
 
         const debug = this.debugLogger.extend(this.validate.name);
@@ -199,6 +223,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Marks the task as failed with an optional message.
+     * @param {string} message - The message to log when the task fails.
+     * @returns {Promise<void>} A promise that resolves when the task is marked as failed.
+     */
     public async fail(message: string): Promise<void> {
 
         const debug = this.debugLogger.extend(this.fail.name);
@@ -220,6 +249,10 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Reads additional details required for the task execution.
+     * @returns {Promise<IDetails>} A promise that resolves to an object containing additional details.
+     */
     private async readDetails(): Promise<IDetails> {
 
         const debug = this.debugLogger.extend(this.readDetails.name);
@@ -246,6 +279,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Reads inputs for the 'new' strategy and updates the parameters object.
+     * @param {IParameters} parameters - The parameters object to update.
+     * @returns {Promise<IParameters>} A promise that resolves to the updated parameters object.
+     */
     private async readNewInputs(parameters: IParameters): Promise<IParameters> {
 
         parameters.strategy = Strategy.New;
@@ -289,6 +327,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Reads inputs for the 'latest' strategy and updates the parameters object.
+     * @param {IParameters} parameters - The parameters object to update.
+     * @returns {Promise<IParameters>} A promise that resolves to the updated parameters object.
+     */
     private async readLatestInputs(parameters: IParameters): Promise<IParameters> {
 
         parameters.strategy = Strategy.Latest;
@@ -327,6 +370,11 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Reads inputs for the 'specific' strategy and updates the parameters object.
+     * @param {IParameters} parameters - The parameters object to update.
+     * @returns {Promise<IParameters>} A promise that resolves to the updated parameters object.
+     */
     private async readSpecificInputs(parameters: IParameters): Promise<IParameters> {
 
         parameters.strategy = Strategy.Specific;
@@ -346,6 +394,10 @@ export class TaskHelper implements ITaskHelper {
 
     }
 
+    /**
+     * Determines whether to suppress the 'SucceededWithIssues' status based on a variable setting.
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether to suppress the status.
+     */
     private async suppressSucceededWithIssues(): Promise<boolean> {
 
         const debug = this.debugLogger.extend(this.suppressSucceededWithIssues.name);

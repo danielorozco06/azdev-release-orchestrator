@@ -9,6 +9,9 @@ import { IRunCreator } from "../workers/runcreator/iruncreator";
 import { IRunProgress } from "./irunprogress";
 import { IProgressReporter } from "../workers/progressreporter/iprogressreporter";
 
+/**
+ * Orchestrator class implements IOrchestrator interface to coordinate the execution of deployment strategies.
+ */
 export class Orchestrator implements IOrchestrator {
 
     private logger: ILogger;
@@ -18,6 +21,13 @@ export class Orchestrator implements IOrchestrator {
     private runDeployer: IRunDeployer;
     private progressReporter: IProgressReporter;
 
+    /**
+     * Constructs a new instance of the Orchestrator class.
+     * @param {IRunCreator} runCreator - The run creator used to create runs.
+     * @param {IRunDeployer} runDeployer - The run deployer used to deploy runs.
+     * @param {IProgressReporter} progressReporter - The progress reporter used to report progress of runs.
+     * @param {ILogger} logger - The logger used for logging and debugging purposes.
+     */
     constructor(runCreator: IRunCreator, runDeployer: IRunDeployer, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
@@ -29,6 +39,11 @@ export class Orchestrator implements IOrchestrator {
 
     }
 
+    /**
+     * Orchestrates the deployment process based on the provided parameters.
+     * @param {IParameters} parameters - The parameters that define the deployment strategy and other options.
+     * @returns {Promise<IRunProgress>} A promise that resolves to an IRunProgress object representing the progress of the run.
+     */
     public async orchestrate(parameters: IParameters): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.orchestrate.name);

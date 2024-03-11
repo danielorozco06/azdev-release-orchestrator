@@ -19,10 +19,15 @@ import { IRunDeployer } from "./workers/rundeployer/irundeployer";
 import { ICommonHelper } from "./helpers/commonhelper/icommonhelper";
 import { CommonHelper } from "./helpers/commonhelper/commonhelper";
 
+/**
+ * Main function to orchestrate the release process.
+ * It initializes necessary helpers, factories, and workers required for the orchestration of the release.
+ * It retrieves endpoint and parameters, creates API and worker factories, and then uses them to create
+ * run creator, run deployer, and progress reporter instances. Finally, it orchestrates the release process
+ * using these instances and validates the release progress status.
+ */
 async function run() {
 
-    // Force enable debug mode when Azure DevOps pipelines
-    // System diagnostics is enabled via System.Debug variable
     const forceDebug: boolean = process.env.SYSTEM_DEBUG == "true" && process.env.DEBUG == undefined;
 
     const logger: ILogger = new Logger("release-orchestrator", forceDebug);

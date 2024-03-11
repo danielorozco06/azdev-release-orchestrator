@@ -18,6 +18,9 @@ import { BuildWebApiRetry } from "../../extensions/buildwebapiretry/buildwebapir
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 import { PipelinesApiRetry } from "../../extensions/pipelinesapiretry/pipelineapiretry";
 
+/**
+ * ApiFactory class implements IApiFactory interface to provide methods for creating API clients with retry capabilities.
+ */
 export class ApiFactory implements IApiFactory {
 
     private logger: ILogger;
@@ -25,6 +28,11 @@ export class ApiFactory implements IApiFactory {
 
     private webApi: WebApi;
 
+    /**
+     * Constructs a new instance of the ApiFactory class.
+     * @param {IEndpoint} endpoint - The endpoint configuration containing the URL and token.
+     * @param {ILogger} logger - The logger used for debugging purposes.
+     */
     constructor(endpoint: IEndpoint, logger: ILogger) {
 
         this.logger = logger;
@@ -47,6 +55,10 @@ export class ApiFactory implements IApiFactory {
 
     }
 
+    /**
+     * Creates an instance of CoreApi with retry capabilities.
+     * @returns {Promise<ICoreApiRetry>} A promise that resolves to an instance of ICoreApiRetry.
+     */
     public async createCoreApi(): Promise<ICoreApiRetry> {
 
         const debug = this.debugLogger.extend(this.createCoreApi.name);
@@ -60,6 +72,10 @@ export class ApiFactory implements IApiFactory {
 
     }
 
+    /**
+     * Creates an instance of BuildApi with retry capabilities.
+     * @returns {Promise<IBuildApiRetry>} A promise that resolves to an instance of IBuildApiRetry.
+     */
     public async createBuildApi(): Promise<IBuildApiRetry> {
 
         const debug = this.debugLogger.extend(this.createBuildApi.name);
@@ -74,6 +90,10 @@ export class ApiFactory implements IApiFactory {
 
     }
 
+    /**
+     * Creates an instance of PipelinesApi with retry capabilities.
+     * @returns {Promise<IPipelinesApiRetry>} A promise that resolves to an instance of IPipelinesApiRetry.
+     */
     public async createPipelinesApi(): Promise<IPipelinesApiRetry> {
 
         const debug = this.debugLogger.extend(this.createPipelinesApi.name);
@@ -87,6 +107,10 @@ export class ApiFactory implements IApiFactory {
 
     }
 
+    /**
+     * Creates an instance of BuildWebApi with retry capabilities.
+     * @returns {Promise<IBuildWebApiRetry>} A promise that resolves to an instance of IBuildWebApiRetry.
+     */
     public async createBuildWebApi(): Promise<IBuildWebApiRetry> {
 
         const debug = this.debugLogger.extend(this.createBuildWebApi.name);
@@ -100,6 +124,10 @@ export class ApiFactory implements IApiFactory {
 
     }
 
+    /**
+     * Creates an instance of ApiClient.
+     * @returns {Promise<IApiClient>} A promise that resolves to an instance of IApiClient.
+     */
     private async createApiClient(): Promise<IApiClient> {
 
         const debug = this.debugLogger.extend(this.createApiClient.name);

@@ -14,6 +14,9 @@ import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebap
 import { IRunStage } from "../../workers/runcreator/irunstage";
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
+/**
+ * Class responsible for selecting and managing Azure DevOps builds.
+ */
 export class BuildSelector implements IBuildSelector {
 
     private debugLogger: IDebug;
@@ -22,6 +25,13 @@ export class BuildSelector implements IBuildSelector {
     private pipelinesApi: IPipelinesApiRetry;
     private buildWebApi: IBuildWebApiRetry;
 
+    /**
+     * Constructs a new instance of the BuildSelector class.
+     * @param buildApi - An instance of IBuildApiRetry to interact with build APIs.
+     * @param pipelinesApi - An instance of IPipelinesApiRetry to interact with pipeline APIs.
+     * @param buildWebApi - An instance of IBuildWebApiRetry to interact with build web APIs.
+     * @param logger - An instance of ILogger for logging purposes.
+     */
     constructor(buildApi: IBuildApiRetry, pipelinesApi: IPipelinesApiRetry, buildWebApi: IBuildWebApiRetry, logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
@@ -32,6 +42,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Creates a new build based on the provided definition, resources filter, optional stages, and parameters.
+     * @param definition - The build definition from which to create the build.
+     * @param resourcesFilter - The resources filter to apply to the build.
+     * @param stages - Optional array of stage names to include in the build.
+     * @param parameters - Optional dictionary of build parameters.
+     * @returns A promise that resolves to the created Build object.
+     */
     public async createBuild(definition: BuildDefinition, resourcesFilter: IResourcesFilter, stages?: string[], parameters?: IBuildParameters): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.createBuild.name);
@@ -76,6 +94,13 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Retrieves the latest build for the given definition and filter criteria.
+     * @param definition - The build definition to query.
+     * @param filter - The build filter to apply to the query.
+     * @param top - The maximum number of builds to retrieve.
+     * @returns A promise that resolves to the latest Build object.
+     */
     public async getLatestBuild(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.getLatestBuild.name);
@@ -93,13 +118,19 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Retrieves a specific build by its build number.
+     * @param definition - The build definition to query.
+     * @param buildNumber - The build number of the build to retrieve.
+     * @returns A promise that resolves to the requested Build object.
+     */
     public async getSpecificBuild(definition: BuildDefinition, buildNumber: string): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.getSpecificBuild.name);
 
         const matchingBuilds: Build[] = await this.buildApi.getBuilds(
             definition.project!.name!,
-            [ definition.id! ],
+            [definition.id!],
             undefined,
             buildNumber);
 
@@ -120,6 +151,12 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+    * Retrieves the stages of a given build that match the specified stage names.
+    * @param build - The build whose stages are to be retrieved.
+    * @param stages - An array of stage names to filter the stages.
+    * @returns A promise that resolves to an array of IRunStage objects.
+    */
     public async getBuildStages(build: Build, stages: string[]): Promise<IRunStage[]> {
 
         const debug = this.debugLogger.extend(this.getBuildStages.name);
@@ -175,6 +212,11 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Cancels the specified build.
+     * @param build - The build to cancel.
+     * @returns A promise that resolves to the canceled Build object.
+     */
     public async cancelBuild(build: Build): Promise<Build> {
 
         const debug = this.debugLogger.extend(this.cancelBuild.name);
@@ -193,6 +235,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Finds builds based on the provided definition, filter criteria, and limit.
+     * @param definition - The build definition to query.
+     * @param filter - The build filter to apply to the query.
+     * @param top - The maximum number of builds to retrieve.
+     * @returns A promise that resolves to an array of Build objects.
+     * @private
+     */
     private async findBuilds(definition: BuildDefinition, filter: IBuildFilter, top: number): Promise<Build[]> {
 
         const debug = this.debugLogger.extend(this.findBuilds.name);
@@ -201,7 +251,7 @@ export class BuildSelector implements IBuildSelector {
 
         let builds: Build[] = await this.buildApi.getBuilds(
             definition.project!.name!,
-            [ definition.id! ],
+            [definition.id!],
             undefined,
             undefined,
             undefined,
@@ -241,6 +291,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Retrieves the stages from a build definition with optional repository and parameters filters.
+     * @param definition - The build definition from which to get the stages.
+     * @param repository - Optional repository filter to apply.
+     * @param parameters - Optional build parameters to consider.
+     * @returns A promise that resolves to an array of stage names.
+     * @private
+     */
     private async getStages(definition: BuildDefinition, repository?: IRepositoryFilter, parameters?: IBuildParameters): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getStages.name);
@@ -264,6 +322,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Confirms that all required stages are present in the given list of stages.
+     * @param definition - The build definition being checked.
+     * @param stages - The list of stages to check against.
+     * @param required - The list of required stages.
+     * @throws If any of the required stages are missing.
+     * @private
+     */
     private async confirmRequiredStages(definition: BuildDefinition, stages: string[], required: string[]): Promise<void> {
 
         if (!stages.length) {
@@ -287,6 +353,13 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Determines which stages should be skipped based on the required stages.
+     * @param stages - The full list of available stages.
+     * @param required - The list of stages that should not be skipped.
+     * @returns A promise that resolves to an array of stage names to skip.
+     * @private
+     */
     private async getStagesToSkip(stages: string[], required: string[]): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getStagesToSkip.name);
@@ -312,6 +385,13 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Retrieves the template parameters from a build definition with an optional repository filter.
+     * @param definition - The build definition from which to get the parameters.
+     * @param repository - Optional repository filter to apply.
+     * @returns A promise that resolves to an array of parameter names.
+     * @private
+     */
     private async getParameters(definition: BuildDefinition, repository?: IRepositoryFilter): Promise<string[]> {
 
         const debug = this.debugLogger.extend(this.getParameters.name);
@@ -335,6 +415,14 @@ export class BuildSelector implements IBuildSelector {
 
     }
 
+    /**
+     * Confirms that all provided parameters are valid for the given build definition.
+     * @param definition - The build definition being checked.
+     * @param definitionParameters - The list of parameters available in the definition.
+     * @param parameters - The dictionary of parameters to confirm.
+     * @throws If any of the provided parameters are not found in the definition.
+     * @private
+     */
     private async confirmParameters(definition: BuildDefinition, definitionParameters: string[], parameters: IBuildParameters): Promise<void> {
 
         if (!definitionParameters.length) {
