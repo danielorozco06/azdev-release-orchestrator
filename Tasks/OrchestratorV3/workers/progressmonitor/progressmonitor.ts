@@ -9,16 +9,28 @@ import { RunStatus } from "../../orchestrator/runstatus";
 import { IRunStage } from "../runcreator/irunstage";
 import { IBuildStage } from "./ibuildstage";
 
+/**
+ * Class responsible for monitoring the progress of a build run.
+ */
 export class ProgressMonitor implements IProgressMonitor {
 
     private debugLogger: IDebug;
 
+    /**
+     * Initializes a new instance of the ProgressMonitor class.
+     * @param logger - The ILogger instance to use for logging.
+     */
     constructor(logger: ILogger) {
 
         this.debugLogger = logger.extend(this.constructor.name);
 
     }
 
+    /**
+     * Creates a new IRunProgress object based on the provided IRun instance.
+     * @param run - The IRun instance containing information about the build run.
+     * @returns The newly created IRunProgress instance.
+     */
     public createRunProgress(run: IRun): IRunProgress {
 
         const debug = this.debugLogger.extend(this.createRunProgress.name);
@@ -68,6 +80,12 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Updates the progress of a build run based on the current state of its stages.
+     * @param runProgress - The IRunProgress instance to update.
+     * @returns The updated IRunProgress instance.
+     * @throws {Error} If an error occurs during the update process.
+     */
     public updateRunProgress(runProgress: IRunProgress): IRunProgress {
 
         const debug = this.debugLogger.extend(this.updateRunProgress.name);
@@ -122,6 +140,11 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Retrieves the active stages from the given IRunProgress instance.
+     * @param runProgress - The IRunProgress instance to inspect.
+     * @returns An array of IBuildStage instances that are currently active.
+     */
     public getActiveStages(runProgress: IRunProgress): IBuildStage[] {
 
         const debug = this.debugLogger.extend(this.getActiveStages.name);
@@ -135,6 +158,12 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Determines if a given stage is completed.
+     * @private
+     * @param stage - The IBuildStage instance to check.
+     * @returns True if the stage is completed, false otherwise.
+     */
     private isStageCompleted(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isStageCompleted.name);
@@ -151,6 +180,12 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Determines if a given stage is active.
+     * @private
+     * @param stage - The IBuildStage instance to check.
+     * @returns True if the stage is active, false otherwise.
+     */
     private isStageActive(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isStageActive.name);
@@ -167,6 +202,12 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Checks if there are any non-succeeded stages in the provided array of IBuildStage.
+     * @private
+     * @param stages - The array of IBuildStage instances to check.
+     * @returns True if there are non-succeeded stages, false otherwise.
+     */
     private isNonSucceededStages(stages: IBuildStage[]): boolean {
 
         const nonSucceeded: boolean = stages.filter(
@@ -179,6 +220,12 @@ export class ProgressMonitor implements IProgressMonitor {
 
     }
 
+    /**
+     * Checks if there are any stages that succeeded with issues in the provided array of IBuildStage.
+     * @private
+     * @param stages - The array of IBuildStage instances to check.
+     * @returns True if there are stages that succeeded with issues, false otherwise.
+     */
     private isSucceededWithIssuesStages(stages: IBuildStage[]): boolean {
 
         const succeededWithIssues: boolean = stages.filter(
