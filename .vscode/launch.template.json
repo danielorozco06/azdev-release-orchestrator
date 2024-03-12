@@ -8,11 +8,14 @@
       "type": "node",
       "request": "launch",
       "name": "OrchestratorV3",
-      "skipFiles": ["<node_internals>/**"],
-      "preLaunchTask": "Build OrchestratorV3",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "internalConsoleOptions": "openOnSessionStart",
       "program": "${workspaceFolder}/Tasks/OrchestratorV3/task.ts",
-      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
       "env": {
         "SYSTEM_DEBUG": "true",
         "DEBUG": "true"
