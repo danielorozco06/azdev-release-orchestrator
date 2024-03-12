@@ -16,11 +16,18 @@ import { IRunProgress } from "../../orchestrator/irunprogress";
 import { RunStatus } from "../../orchestrator/runstatus";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 
+/**
+ * ProgressReporter class implements IProgressReporter interface to report the progress of builds.
+ */
 export class ProgressReporter implements IProgressReporter {
 
     private logger: ILogger;
     private debugLogger: IDebug;
 
+    /**
+     * Constructs a new instance of ProgressReporter.
+     * @param logger - ILogger instance for logging purposes.
+     */
     constructor(logger: ILogger) {
 
         this.logger = logger;
@@ -28,6 +35,10 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Logs the details of a run.
+     * @param run - The IRun instance containing the run details to be logged.
+     */
     public logRun(run: IRun): void {
 
         const debug = this.debugLogger.extend(this.logRun.name);
@@ -74,6 +85,10 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+    * Logs the build parameters.
+    * @param parameters - IBuildParameters instance containing the build parameters to be logged.
+    */
     public logParameters(parameters: IBuildParameters): void {
 
         const table: Table = this.newTable([
@@ -112,6 +127,11 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Logs the filters based on the provided strategy.
+     * @param filters - IFilters instance containing the filters to be logged.
+     * @param strategy - Strategy enum value indicating the strategy used for filtering.
+     */
     public logFilters(filters: IFilters, strategy: Strategy): void {
 
         const columns: string[] = [];
@@ -166,6 +186,10 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Logs the progress of a build stage.
+     * @param stage - IBuildStage instance containing the stage progress details to be logged.
+     */
     public logStageProgress(stage: IBuildStage): void {
 
         const table: Table = this.newTable([
@@ -205,6 +229,10 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Logs the progress of all stages in a build.
+     * @param stages - Array of IBuildStage instances containing the stages progress details to be logged.
+     */
     public logStagesProgress(stages: IBuildStage[]): void {
 
         const table: Table = this.newTable([
@@ -247,6 +275,10 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Logs the overall progress of a run.
+     * @param runProgress - IRunProgress instance containing the run progress details to be logged.
+     */
     public logRunProgress(runProgress: IRunProgress): void {
 
         const table: Table = this.newTable([
@@ -278,6 +310,12 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Creates a new CLI table with specified headers and optional column widths.
+     * @param headers - Array of strings representing the headers of the table.
+     * @param widths - Optional array of numbers representing the widths of the columns.
+     * @returns A new Table instance with the specified headers and column widths.
+     */
     private newTable(headers: string[], widths: number[] = []): Table {
 
         const options: any = {
@@ -293,6 +331,14 @@ export class ProgressReporter implements IProgressReporter {
 
     }
 
+    /**
+     * Masks a string by replacing characters with a specified mask character.
+     * @param input - The string to be masked.
+     * @param character - The mask character to use. Defaults to "*".
+     * @param leading - The number of leading characters to leave unmasked. Defaults to 1.
+     * @param trailing - The number of trailing characters to leave unmasked. Defaults to 1.
+     * @returns The masked string.
+     */
     private maskString(input: string, character: string = "*", leading: number = 1, trailing: number = 1): string {
 
         let totalLenght: number = input.length;
