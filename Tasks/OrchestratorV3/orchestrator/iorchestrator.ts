@@ -2,7 +2,7 @@ import { IParameters } from "../helpers/taskhelper/iparameters";
 import { IRunProgress } from "./irunprogress";
 
 /**
- * Orchestrator class implements IOrchestrator interface to coordinate the execution of deployment strategies.
+ * Interface for the Orchestrator class.
  */
 export interface IOrchestrator {
     /**

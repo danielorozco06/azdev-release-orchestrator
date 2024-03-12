@@ -3,7 +3,7 @@
 import { IDebug } from "./idebug";
 
 /**
- * Logger class implements ILogger interface to provide logging functionality.
+ * Interface for the logger.
  */
 export interface ILogger {
     /**

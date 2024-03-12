@@ -1,5 +1,5 @@
 /**
- * CommonHelper class implements ICommonHelper interface to provide common utility methods.
+ * Interface for common helper methods.
  */
 export interface ICommonHelper {
     /**

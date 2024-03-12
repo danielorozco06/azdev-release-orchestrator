@@ -3,8 +3,7 @@ import { IParameters } from "./iparameters";
 import { RunStatus } from "../../orchestrator/runstatus";
 
 /**
- * TaskHelper class implements ITaskHelper interface to provide methods for retrieving endpoint details,
- * task parameters, validating run status, and handling task failure.
+ * Interface for the TaskHelper class.
  */
 export interface ITaskHelper {
     /**

@@ -3,7 +3,7 @@ import { IRunCreator } from "../../workers/runcreator/iruncreator";
 import { IProgressReporter } from "../../workers/progressreporter/iprogressreporter";
 
 /**
- * WorkerFactory class implements IWorkerFactory interface to provide methods for creating worker instances.
+ * Interface for the WorkerFactory class.
  */
 export interface IWorkerFactory {
     /**

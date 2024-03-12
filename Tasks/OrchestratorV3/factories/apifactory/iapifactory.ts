@@ -4,7 +4,7 @@ import { IBuildWebApiRetry } from "../../extensions/buildwebapiretry/ibuildwebap
 import { IPipelinesApiRetry } from "../../extensions/pipelinesapiretry/ipipelineapiretry";
 
 /**
- * ApiFactory class implements IApiFactory interface to provide methods for creating API clients with retry capabilities.
+ * Interface for ApiFactory
  */
 export interface IApiFactory {
     /**
