@@ -10,6 +10,9 @@ import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IBuildStage } from "../progressmonitor/ibuildstage";
 import { IStageDeployer } from "../stagedeployer/istagedeployer";
 
+/**
+ * Class responsible for deploying runs either manually or automatically.
+ */
 export class RunDeployer implements IRunDeployer {
 
     private logger: ILogger;
@@ -20,6 +23,14 @@ export class RunDeployer implements IRunDeployer {
     private progressMonitor: IProgressMonitor;
     private progressReporter: IProgressReporter;
 
+    /**
+     * Constructs a new instance of the RunDeployer.
+     * @param commonHelper - Helper for common operations.
+     * @param stageDeployer - Deployer for individual stages.
+     * @param progressMonitor - Monitor for tracking run progress.
+     * @param progressReporter - Reporter for logging progress.
+     * @param logger - Logger for standard logging.
+     */
     constructor(commonHelper: ICommonHelper, stageDeployer: IStageDeployer, progressMonitor: IProgressMonitor, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
@@ -32,6 +43,11 @@ export class RunDeployer implements IRunDeployer {
 
     }
 
+    /**
+     * Deploys a run manually.
+     * @param run - The run to be deployed.
+     * @returns A promise that resolves with the updated run progress.
+     */
     public async deployManual(run: IRun): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
@@ -56,6 +72,11 @@ export class RunDeployer implements IRunDeployer {
 
     }
 
+    /**
+     * Deploys a run in an automated fashion.
+     * @param run - The run to be deployed.
+     * @returns A promise that resolves with the updated run progress.
+     */
     public async deployAutomated(run: IRun): Promise<IRunProgress> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);

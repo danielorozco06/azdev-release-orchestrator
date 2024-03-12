@@ -13,6 +13,9 @@ import { ICommonHelper } from "../../helpers/commonhelper/icommonhelper";
 import { IStageSelector } from "../../helpers/stageselector/istageselector";
 import { IBuildSelector } from "../../helpers/buildselector/ibuildselector";
 
+/**
+ * Class responsible for approving and checking stages within a build pipeline.
+ */
 export class StageApprover implements IStageApprover {
 
     private logger: ILogger;
@@ -22,6 +25,13 @@ export class StageApprover implements IStageApprover {
     private stageSelector: IStageSelector;
     private commonHelper: ICommonHelper;
 
+    /**
+     * Constructs a new instance of the StageApprover.
+     * @param buildSelector - Selector for builds.
+     * @param stageSelector - Selector for stages.
+     * @param commonHelper - Helper for common operations.
+     * @param logger - Logger for standard logging.
+     */
     constructor(buildSelector: IBuildSelector, stageSelector: IStageSelector, commonHelper: ICommonHelper, logger: ILogger) {
 
         this.logger = logger;
@@ -33,6 +43,14 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Approves a given stage if it has pending approvals.
+     * @param stage - The stage to approve.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing approval configuration.
+     * @param comment - Optional comment for the approval.
+     * @returns A promise that resolves with the updated stage after approval attempts.
+     */
     public async approve(stage: IBuildStage, build: Build, settings: ISettings, comment?: string): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.approve.name);
@@ -90,6 +108,13 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Checks if a given stage has any pending checks and handles them accordingly.
+     * @param stage - The stage to check.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing check configuration.
+     * @returns A promise that resolves with the updated stage after check attempts.
+     */
     public async check(stage: IBuildStage, build: Build, settings: ISettings): Promise<IBuildStage> {
 
         stage.attempt.check++;
@@ -111,6 +136,13 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Validates the approval process for a stage and cancels the run if necessary.
+     * @param stage - The stage whose approval is being validated.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing approval validation configuration.
+     * @private
+     */
     private async validateApproval(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
 
         const debug = this.debugLogger.extend(this.validateApproval.name);
@@ -145,6 +177,13 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Validates the check process for a stage and cancels the run if necessary.
+     * @param stage - The stage whose checks are being validated.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing check validation configuration.
+     * @private
+     */
     public async validateCheck(stage: IBuildStage, build: Build, settings: ISettings): Promise<void> {
 
         const debug = this.debugLogger.extend(this.validateCheck.name);
@@ -177,6 +216,11 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Determines if there are any pending approvals for a stage.
+     * @param stage - The stage to evaluate for pending approvals.
+     * @returns True if there are pending approvals, false otherwise.
+     */
     public isApprovalPending(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isApprovalPending.name);
@@ -202,6 +246,11 @@ export class StageApprover implements IStageApprover {
 
     }
 
+    /**
+     * Determines if there are any pending checks for a stage.
+     * @param stage - The stage to evaluate for pending checks.
+     * @returns True if there are pending checks, false otherwise.
+     */
     public isCheckPending(stage: IBuildStage): boolean {
 
         const debug = this.debugLogger.extend(this.isCheckPending.name);

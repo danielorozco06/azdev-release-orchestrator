@@ -49,7 +49,6 @@ async function run() {
 
         const orchestrator: IOrchestrator = new Orchestrator(runCreator, runDeployer, progressReporter, logger);
 
-        // Run orchestrator
         const releaseProgress: IRunProgress = await orchestrator.orchestrate(parameters);
 
         await taskHelper.validate(releaseProgress.status);

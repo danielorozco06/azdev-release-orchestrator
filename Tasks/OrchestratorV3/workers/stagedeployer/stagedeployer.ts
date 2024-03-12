@@ -10,6 +10,9 @@ import { IProgressReporter } from "../progressreporter/iprogressreporter";
 import { IStageApprover } from "../stageapprover/istageapprover";
 import { IStageDeployer } from "./istagedeployer";
 
+/**
+ * Class responsible for deploying stages within a build pipeline.
+ */
 export class StageDeployer implements IStageDeployer {
 
     private logger: ILogger;
@@ -20,6 +23,14 @@ export class StageDeployer implements IStageDeployer {
     private stageApprover: IStageApprover;
     private progressReporter: IProgressReporter;
 
+    /**
+     * Constructs a new instance of the StageDeployer.
+     * @param commonHelper - Helper for common operations.
+     * @param stageSelector - Selector for stages.
+     * @param stageApprover - Approver for stages.
+     * @param progressReporter - Reporter for stage progress.
+     * @param logger - Logger for standard logging.
+     */
     constructor(commonHelper: ICommonHelper, stageSelector: IStageSelector, stageApprover: IStageApprover, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
@@ -32,6 +43,13 @@ export class StageDeployer implements IStageDeployer {
 
     }
 
+    /**
+     * Deploys a stage manually and handles its progress.
+     * @param stage - The stage to deploy.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing deployment configuration.
+     * @returns A promise that resolves with the updated stage after deployment attempts.
+     */
     public async deployManual(stage: IBuildStage, build: Build, settings: ISettings): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.deployManual.name);
@@ -125,6 +143,13 @@ export class StageDeployer implements IStageDeployer {
 
     }
 
+    /**
+     * Deploys a stage automatically and updates its progress.
+     * @param stage - The stage to deploy.
+     * @param build - The build that contains the stage.
+     * @param settings - Settings containing deployment configuration.
+     * @returns A promise that resolves with the updated stage after deployment attempts.
+     */
     public async deployAutomated(stage: IBuildStage, build: Build, settings: ISettings): Promise<IBuildStage> {
 
         const debug = this.debugLogger.extend(this.deployAutomated.name);

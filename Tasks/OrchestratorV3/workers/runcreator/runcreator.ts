@@ -16,6 +16,9 @@ import { IDefinitionSelector } from "../../helpers/definitionselector/idefinitio
 import { IResourcesFilter } from "../filtercreator/iresourcesfilter";
 import { IRunStage } from "./irunstage";
 
+/**
+ * RunCreator class implements IRunCreator interface to create runs based on different strategies.
+ */
 export class RunCreator implements IRunCreator {
 
     private logger: ILogger;
@@ -27,6 +30,15 @@ export class RunCreator implements IRunCreator {
     private filterCreator: IFilterCreator;
     private progressReporter: IProgressReporter;
 
+    /**
+     * Constructs a new instance of RunCreator.
+     * @param projectSelector - IProjectSelector instance for selecting projects.
+     * @param definitionSelector - IDefinitionSelector instance for selecting build definitions.
+     * @param buildSelector - IBuildSelector instance for selecting and creating builds.
+     * @param filterCreator - IFilterCreator instance for creating filters.
+     * @param progressReporter - IProgressReporter instance for reporting progress.
+     * @param logger - ILogger instance for logging purposes.
+     */
     constructor(projectSelector: IProjectSelector, definitionSelector: IDefinitionSelector, buildSelector: IBuildSelector, filterCreator: IFilterCreator, progressReporter: IProgressReporter, logger: ILogger) {
 
         this.logger = logger;
@@ -40,6 +52,11 @@ export class RunCreator implements IRunCreator {
 
     }
 
+    /**
+     * Creates a run based on the provided parameters and strategy.
+     * @param parameters - IParameters instance containing the parameters for run creation.
+     * @returns A Promise that resolves to an IRun instance representing the created run.
+     */
     public async create(parameters: IParameters): Promise<IRun> {
 
         const debug = this.debugLogger.extend(this.create.name);
